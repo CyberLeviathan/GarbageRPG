@@ -2,11 +2,79 @@
 #include <math.h>
 using namespace std;
 
+void stats(string name);
+void fight();
+
 string name;
 int HP = 10, att = 5, def = 1;
 
 string eName = "Orc";
 int eHP = 10, eatt = 1, edef = 1;
+
+/*
+int main() {
+	cout << "Enter a name for your character: ";
+	cin >> name;
+	cout << endl;
+	cout << "-----------------------------------------------------------------\n";
+	cout << "  | * Welcome to the worst text-based RPG ever, " + name << ". * |" << endl;
+	cout << "-----------------------------------------------------------------\n";
+	cout << endl;
+	string adventureQuestion;
+	cout << "To go on an adventure type '1', to see your stats type '2' or type '3' to go back to character creation: ";
+	cin >> adventureQuestion;
+
+	if (adventureQuestion == "1") {
+		cout << endl;
+		fight();
+	}
+
+	else if (adventureQuestion == "2") {
+		stats(name);
+		cout << "Start the program again if you want to pick '1'.";
+	}
+
+	else if (adventureQuestion == "3") {
+		cout << "Since I don't know how to return you to the previous menu yet, you have to restart. Sorry." << endl;
+	}
+
+	else {
+		cout << endl;
+		cout << "I said type '1' or '2' or '3', dummy. Now you have to restart if you want to play." << endl;
+	}
+	system("pause>0");
+}
+*/
+
+int main() {
+	cout << "Enter a name for your character: ";
+	cin >> name;
+	cout << endl;
+	cout << "-----------------------------------------------------------------\n";
+	cout << "  | * Welcome to the worst text-based RPG ever, " + name << ". * |" << endl;
+	cout << "-----------------------------------------------------------------\n";
+	cout << endl;
+	
+	while (1) {
+		char adventureQuestion;
+		cout << "To go on an adventure type '1': " << endl;
+		cout << "To see your stats type '2': " << endl;
+		cout << "To exit the game type '3': " << endl;
+		cin >> adventureQuestion;
+		switch (adventureQuestion) {
+			case '1' :{
+				fight();
+			} break;
+
+			case '2' :{
+				stats(name);
+			} break;
+
+			case '3' :{
+			} return 0;
+		}
+	}
+}
 
 void stats(string name) {
 	cout << endl;
@@ -42,7 +110,7 @@ void fight() {
 			cout << "Type '1' to attack: ";
 			int attackOrRun;
 			cin >> attackOrRun;
-				if (attackOrRun == 1) {
+			if (attackOrRun == 1) {
 				cout << endl;
 				eHP = eHP * edef - att;
 				cout << "After a brutal fight.." << endl;
@@ -72,38 +140,3 @@ void fight() {
 		cout << "Are you, perhaps, incapable of following simple instructions, numbnuts ? Restart." << endl;
 	}
 }
-
-int main() {
-	cout << "Enter a name for your character: ";
-	cin >> name;
-	cout << endl;
-	cout << "-----------------------------------------------------------------\n";
-	cout << "  | * Welcome to the worst text-based RPG ever, " + name << ". * |" << endl;
-	cout << "-----------------------------------------------------------------\n";
-	cout << endl;
-	string adventureQuestion;
-	cout << "To go on an adventure type '1', to see your stats type '2' or type '3' to go back to character creation: ";
-	cin >> adventureQuestion;
-
-	if (adventureQuestion == "1") {
-		cout << endl;
-		fight();
-	}
-
-	else if (adventureQuestion == "2") {
-		stats(name);
-		cout << "Start the program again if you want to pick '1'.";
-	}
-
-	else if (adventureQuestion == "3") {
-		cout << "Since I don't know how to return you to the previous menu yet, you have to restart. Sorry." << endl;
-	}
-
-	else {
-		cout << endl;
-		cout << "I said type '1' or '2' or '3', dummy. Now you have to restart if you want to play." << endl;
-	}
-
-	system("pause>0");
-}
-
