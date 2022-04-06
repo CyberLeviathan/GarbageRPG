@@ -1,0 +1,114 @@
+#include <iostream>
+#include <math.h>
+#include <time.h>
+using namespace std;
+
+void stats(string name);
+void fight();
+
+string name;
+int HP = 10, att = 4, def = 1;
+string eName = "Orc";
+int eHP = 10, eatt = 1, edef = 1;
+
+int main() {
+	cout << "Enter a name for your character: ";
+	cin >> name;
+	cout << endl;
+	cout << "----------------------------------------------------------\n";
+	cout << "  | * Welcome to the worst text-based RPG ever, " + name << ". * |" << endl;
+	cout << "----------------------------------------------------------\n";
+	cout << endl;
+	
+	while (1) {
+		char adventureQuestion;
+		cout << "===============================================" << endl;
+		cout << "==      To go on an adventure type '1'       =="<< endl;
+		cout << "==        To see your stats type '2'         ==" << endl;
+		cout << "==        To exit the game type '3'          ==" << endl;
+		cout << "===============================================" << endl;
+		cin >> adventureQuestion;
+		switch (adventureQuestion) {
+			case '1' :{
+				fight();
+			} break;
+
+			case '2' :{
+				stats(name);
+			} break;
+
+			case '3' :{
+			} return 0;
+		}
+	}
+	return 0;
+}
+
+void stats(string name) {
+	cout << endl;
+	cout << "----------------------------------STATS----------------------------------" << endl;
+	cout << "#        " << name << ", you have " << HP << " Health Points, " << att << " Attack and " << def << " Defense.        #" << endl;
+	cout << "-------------------------------------------------------------------------" << endl;
+	cout << endl;
+}
+
+void fight() {
+	cout << "---------------------------------BATTLE----------------------------------" << endl;
+	cout << "--    You see an unfriendly " << eName << " with " << eHP << " HP, " << eatt << " Attack and " << edef << " Defense.    --" << endl;
+	cout << "-------------------------------------------------------------------------" << endl;
+	stats(name);
+	cout << "-> Type '1' to Engage or '2' to Run: ";
+	int battleOrRun;
+	cin >> battleOrRun;
+	cout << endl;
+	if (battleOrRun == 1) {
+		while (HP > 0 && eHP > 0) {
+			char attackOrDefend;
+			cout << "===============================================" << endl;
+			cout << "==            Type '1' to Attack!            ==" << endl;
+			cout << "==            Type '2' to Defend!            ==" << endl;
+			cout << "===============================================" << endl;
+			cin >> attackOrDefend;
+			switch (attackOrDefend) {
+				case '1': {
+				cout << "You chose to focus on attacking your enemy and after a brutal fight.." << endl;
+				eHP = eHP * edef - 2 * att;
+				cout << "> " << eName << " has " << eHP << " HP left." << endl;
+				HP = HP * def - eatt;
+				cout << "> You have " << HP << " HP left." << endl;
+				} break;
+
+				case '2': {
+					cout << "You chose to focus on defending yourself and after a brutal fight.." << endl;
+					eHP = eHP * edef - att/2;
+					cout << eName << " has " << eHP << " HP left." << endl;
+					HP = HP * def - eatt;
+					cout << "You have " << HP << " HP left." << endl;
+				} break;
+			}
+		}
+		if (eHP <= 0) {
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU WIN! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+		else if (HP <= 0) {
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU LOSE! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+	}
+
+	else if (battleOrRun == 2) {
+		cout << "The " << eName << " stabs you in the back!" << endl;
+		cout << endl;
+		cout << "===============" << endl;
+		cout << " * YOU LOSE! * " << endl;
+		cout << "===============" << endl;
+		cout << endl;
+	}
+}
