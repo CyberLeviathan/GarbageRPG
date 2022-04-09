@@ -2,11 +2,11 @@
 #include <math.h>
 #include <time.h>
 using namespace std;
-
+//============================================SUBPROGRAMS===============================================================================================
 void stats(string name);
 void fightOrc();
 void fightTroll();
-
+//============================================GLOBAL====================================================================================================
 string name;
 float HP = 10, att = 4, def = 2;
 float randomMultiplier = rand() % 2 + 1;
