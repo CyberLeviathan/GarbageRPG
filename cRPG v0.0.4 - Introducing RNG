@@ -1,0 +1,211 @@
+#include <iostream>
+#include <math.h>
+#include <time.h>
+using namespace std;
+
+void stats(string name);
+void fightOrc();
+void fightTroll();
+
+string name;
+float HP = 10, att = 4, def = 2;
+float randomMultiplier = rand() % 2 + 1;
+string eName = "Orc";
+float eHP = rand() % 40 +10, eatt = 1, edef = 1;
+bool orcIsDead;
+string eName2 = "Troll";
+float eHP2 = rand() % 40 +10, eatt2 = 2, edef2 = 2; 
+
+//============================================MAIN======================================================================================================
+int main() {
+	cout << "Enter a name for your character: ";
+	cin >> name;
+	cout << endl;
+	cout << "----------------------------------------------------------\n";
+	cout << "  | * Welcome to the worst text-based RPG ever, " + name << ". * |" << endl;
+	cout << "----------------------------------------------------------\n";
+	cout << endl;
+	
+	while (1) {
+		char adventureQuestion;
+		cout << "===============================================" << endl;
+		cout << "==      To go on an adventure type '1'       =="<< endl;
+		cout << "==        To see your stats type '2'         ==" << endl;
+		cout << "==        To exit the game type '3'          ==" << endl;
+		cout << "===============================================" << endl;
+		cin >> adventureQuestion;
+		switch (adventureQuestion) {
+			case '1' :{
+				if (orcIsDead == false) {
+					fightOrc();
+				}
+				else if (orcIsDead == true) {
+					fightTroll();
+				}
+			} break;
+
+			case '2' :{
+				stats(name);
+			} break;
+
+			case '3' :{
+			} return 0;
+		}
+	}
+	return 0;
+}
+//============================================CHARACTER==STATS==PROCEDURE===============================================================================
+void stats(string name) {
+	cout << endl;
+	cout << "----------------------------------STATS----------------------------------" << endl;
+	cout << "#              " << name << ", you have " << HP << " HP, " << att << " Attack and " << def << " Defense.             #" << endl;
+	cout << "-------------------------------------------------------------------------" << endl;
+	cout << endl;
+}
+//============================================BATTLE==PROCEDURE==ORC====================================================================================
+void fightOrc() {
+	cout << "---------------------------------BATTLE----------------------------------" << endl;
+	cout << "--    You see an unfriendly " << eName << " with " << eHP << " HP, " << eatt << " Attack and " << edef << " Defense.    --" << endl;
+	cout << "-------------------------------------------------------------------------" << endl;
+	cout << "                                                                           " << endl;
+	cout << "                                                     [@  @]       < Orc    " << endl;
+	cout << "                                                     [ -- ]                " << endl;
+	cout << "                                                (**==========**)           " << endl;
+	cout << " You >    [ *_*]                                 || |======| ||            " << endl;
+	cout << "       (@========@)                              || |======| ||            " << endl;
+	cout << "       || |====| ||                              || |======| ||            " << endl;
+	cout << "       || |====| ||                  ()=========[%] |==||==| [%]           " << endl;
+	cout << "      [%] |=||=| [%]=>>>>>>>                        |==||==|               " << endl;
+	cout << "          |=||=|                                    |==||==|               " << endl;
+	cout << "          [=][=]                                    [==][==]               " << endl;
+	stats(name);
+	cout << "=> Type '1' to Engage or '2' to Run: ";
+	int battleOrRun;
+	cin >> battleOrRun;
+	cout << endl;
+	if (battleOrRun == 1) {
+		while (HP > 0 && eHP > 0) {
+			char attackOrDefend;
+			cout << "===============================================" << endl;
+			cout << "==            Type '1' to Attack!            ==" << endl;
+			cout << "==            Type '2' to Defend!            ==" << endl;
+			cout << "===============================================" << endl;
+			cin >> attackOrDefend;
+			switch (attackOrDefend) {
+				case '1': {
+				cout << "You chose to focus on attacking your enemy and after a brutal fight.." << endl;
+				eHP = eHP - (randomMultiplier * att) / edef;
+				cout << "> " << eName << " has " << eHP << " HP left." << endl;
+				HP = HP - eatt / def;
+				cout << "> You have " << HP << " HP left." << endl;
+				} break;
+
+				case '2': {
+					cout << "You chose to focus on defending yourself and after a brutal fight.." << endl;
+					eHP = eHP - att / edef;
+					cout << eName << " has " << eHP << " HP left." << endl;
+					HP = HP - eatt / (randomMultiplier * def);
+					cout << "You have " << HP << " HP left." << endl;
+				} break;
+			}
+		}
+		if (eHP <= 0) {
+			orcIsDead = true;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU WIN! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+		else if (HP <= 0) {
+			orcIsDead = false;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU LOSE! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+	}
+
+	else if (battleOrRun == 2) {
+		orcIsDead = false;
+		cout << "The " << eName << " stabs you in the back!" << endl;
+		cout << endl;
+		cout << "===============" << endl;
+		cout << " * YOU LOSE! * " << endl;
+		cout << "===============" << endl;
+		cout << endl;
+	}
+}
+//============================================BATTLE==PROCEDURE==TROLL==================================================================================
+void fightTroll() {
+	cout << "---------------------------------BATTLE----------------------------------" << endl;
+	cout << "--    You see an unfriendly " << eName2 << " with " << eHP2 << " HP, " << eatt2 << " Attack and " << edef2 << " Defense.    --" << endl;
+	cout << "-------------------------------------------------------------------------" << endl;
+	cout << "                                                                           " << endl;
+	cout << "                                                     [& &]       < Troll  " << endl;
+	cout << "                                                     [ ~ ]                " << endl;
+	cout << "                                                (#===========#)           " << endl;
+	cout << " You >    [ *_*]                                 || |=====| ||            " << endl;
+	cout << "       (@========@)                              || |=====| ||            " << endl;
+	cout << "       || |====| ||                  |--|        || |=====| ||            " << endl;
+	cout << "       || |====| ||                  | (|=======[%] |=| |=| [%]           " << endl;
+	cout << "      [%] |=||=| [%]=>>>>>>>         |--|           |=| |=|               " << endl;
+	cout << "          |=||=|                                    |=| |=|               " << endl;
+	cout << "          [=][=]                                    [=] [=]               " << endl;
+	stats(name);
+	cout << "=> Type '1' to Engage or '2' to Run: ";
+	int battleOrRun;
+	cin >> battleOrRun;
+	cout << endl;
+	if (battleOrRun == 1) {
+		while (HP > 0 && eHP2 > 0) {
+			char attackOrDefend;
+			cout << "===============================================" << endl;
+			cout << "==            Type '1' to Attack!            ==" << endl;
+			cout << "==            Type '2' to Defend!            ==" << endl;
+			cout << "===============================================" << endl;
+			cin >> attackOrDefend;
+			switch (attackOrDefend) {
+			case '1': {
+				cout << "You chose to focus on attacking your enemy and after a brutal fight.." << endl;
+				eHP2 = eHP2 - (randomMultiplier * att) / edef2;
+				cout << "> " << eName2 << " has " << eHP2 << " HP left." << endl;
+				HP = HP - eatt2 / def;
+				cout << "> You have " << HP << " HP left." << endl;
+			} break;
+
+			case '2': {
+				cout << "You chose to focus on defending yourself and after a brutal fight.." << endl;
+				eHP2 = eHP2 - att / edef2;
+				cout << eName2 << " has " << eHP2 << " HP left." << endl;
+				HP = HP - eatt2 / (randomMultiplier * def);
+				cout << "You have " << HP << " HP left." << endl;
+			} break;
+			}
+		}
+		if (eHP2 <= 0) {
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU WIN! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+		else if (HP <= 0) {
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU LOSE! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+	}
+
+	else if (battleOrRun == 2) {
+		cout << "The " << eName2 << " stabs you in the back!" << endl;
+		cout << endl;
+		cout << "===============" << endl;
+		cout << " * YOU LOSE! * " << endl;
+		cout << "===============" << endl;
+		cout << endl;
+	}
+}
