@@ -13,7 +13,7 @@ string eName = "Orc";
 bool orcIsDead;
 int eHP = rand() % 40 +10, eatt = 1, edef = 1;
 string eName2 = "Troll";
-int eHP2 = rand() % 50 +10, eatt2 = 1, edef2 = 2; 
+int eHP2 = rand() % 50 +10, eatt2 = 1, edef2 = 1; 
 
 //============================================MAIN======================================================================================================
 int main() {
