@@ -15,7 +15,6 @@ float eHP = rand() % 40 +10, eatt = 1, edef = 1;
 bool orcIsDead;
 string eName2 = "Troll";
 float eHP2 = rand() % 40 +10, eatt2 = 2, edef2 = 2; 
-
 //============================================MAIN======================================================================================================
 int main() {
 	cout << "Enter a name for your character: ";
