@@ -1,0 +1,958 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <string>
+#include <conio.h>
+#include <windows.h>
+#include <thread>
+#include <chrono>
+using namespace std;
+//============================================Subprograms==============================================================================================
+void introScreen();
+void gameMenu();
+void characterCreation();
+void characterClass();
+void mainMenu();
+void stats(string name);
+void statsInfo();
+void heal();
+void shop();
+void playerInventory();
+void encounterNPC();
+void fightOrc();
+void fightTroll();
+void fightGiant();
+void fightUndead();
+void color(int y);
+//============================================Global===================================================================================================
+string name;
+string menuBox(int n, char c);
+bool play;
+double playerHP, maxHP, att, def;
+bool isWarrior;
+bool isMage;
+int playerHasSword;
+int playerHasArmor;
+int lifePotion;
+int goldCoins;
+bool orcIsDead;
+bool trollIsDead;
+bool giantIsDead;
+bool undeadIsDead;
+char upperLeftCorner = (char)201;
+char upperRightCorner = (char)187;
+char horizontalLine = (char)205;
+char leftVerticalLine = (char)185;
+char rightVerticalLine = (char)204;
+char verticalLine = (char)186;
+char lowerLeftCorner = (char)200;
+char lowerRightCorner = (char)188;
+//============================================Drawing==Menu==Box=======================================================================================
+string menuBox(int n, char c) {
+	string str = "";
+	for (int i = 0; i < n; i++)
+		str = str + c;
+	return str;
+}
+//============================================Menu==Globals============================================================================================
+string menuMain[] = { "Main Menu",
+					   "To go on an adventure - \'1\'",
+					   "To see your stats - \'2\'",
+					   "To visit the shop - \'3\'",
+					   "To view your inventory - \'4\'",
+					   "Exit the game by typing \'E\'" };
+//============================================Shop==Globals============================================================================================
+string menuShop[] = { "Shop Menu",
+					  "To BUY Iron Sword x1 for 100 gold - \'1\'",
+					  "To BUY Iron Armor x1 for 100 gold - \'2\'",
+					  "To BUY Life Potion x1 for 50 gold - \'3\'",
+					  "Return to the main menu by typing \'R\'" };
+//============================================Game==Menu==Globals======================================================================================
+string menuGame[] = { "Game Menu",
+					  "To Play - \'1\'",
+					  "To See Settings - \'2\'",
+					  "To See Credits - \'3\'",
+					  "Quit by typing \'Q\'" };
+//============================================Stats==Menu==Globals=====================================================================================
+string playerInfo[] = { "Player Info",
+						 "with",
+						 "Health",
+						 "Attack and",
+						 "Defense",
+						 "Return to the main menu by typing \'R\'" };
+//============================================Character==Class==Globals================================================================================
+string selectClass[] = { "Select Character Class",
+						 "To choose the",
+						 "Warrior",
+						 "class - '1'",
+						 "Mage",
+						 "class - '2'" };
+
+//============================================Character==Creation==Globals=============================================================================
+string charCreationMenu[] = { "Enter a name for your character: ",
+					  "Welcome to the worst text-based RPG ever, " };
+//============================================Main=====================================================================================================
+int main() {
+	srand(time(0));
+	introScreen();
+	while (1) {
+		char gameQuestion;
+		gameMenu();
+		cin >> gameQuestion;
+		switch (gameQuestion) {
+		case '1': {
+			play = true;
+			if (play == true) {
+				characterCreation();
+				characterClass();
+				while (1) {
+					char adventureQuestion;
+					mainMenu();
+					cin >> adventureQuestion;
+					// adventureQuestion = _getch(); - no need to press Enter after input
+					switch (adventureQuestion) {
+					case '1': {
+						int npcChance = 1 + rand() % 7;
+						if (orcIsDead == false && playerHP > 0) {
+							if (npcChance == 7) {
+								encounterNPC();
+							}
+							else {
+								fightOrc();
+							}
+						}
+						else if (trollIsDead == false && playerHP > 0) {
+							if (npcChance == 7) {
+								encounterNPC();
+							}
+							else {
+								fightTroll();
+							}
+						}
+						else if (giantIsDead == false && playerHP > 0) {
+							if (npcChance == 7) {
+								encounterNPC();
+							}
+							else {
+								fightGiant();
+							}
+						}
+						else if (undeadIsDead == false && playerHP > 0) {
+							if (npcChance == 7) {
+								encounterNPC();
+							}
+							else {
+								fightUndead();
+							}
+						}
+						else if (giantIsDead == true && trollIsDead == true && orcIsDead == true && undeadIsDead == true && playerHP > 0) {
+							cout << "Congratulations, " << name << ". " << "You are playing faster than I can code." << endl;
+						}
+						else if (playerHP <= 0) {
+							cout << "You are dead, Gamer." << endl;
+						}
+					} break;
+					case '2': {
+						stats(name);
+					} break;
+					case '3': {
+						shop();
+					} break;
+					case '4': {
+						playerInventory();
+					}break;
+					case 'e':
+					case 'E': {
+					} return 0;
+					default: {
+						cout << "You must pick one of the specified options, " << name << endl;
+					}
+					}
+				}
+			}
+		} break;
+		case '2': {
+			cout << endl;
+			cout << "COMING SOON !!" << endl;
+			cout << endl;
+		} break;
+		case '3': {
+			cout << endl;
+			cout << "CyberLeviathan a.k.a. Silvestar Donchev" << endl;
+			cout << endl;
+		} break;
+		case 'q':
+		case 'Q': {
+		} return 0;
+		default: {
+			cout << "You must pick one of the specified options!" << endl;
+		}
+		}
+	}
+}
+//============================================Intro==Screen============================================================================================
+void introScreen() {
+	cout << upperLeftCorner << menuBox(63, horizontalLine) << upperRightCorner << endl;
+	color(10);
+	cout << "          Welcome                                     " << endl;
+	cout << "    ____       to   _                        ____  ____   ____         " << endl;
+	cout << "   / ___| __ _ _ __| |__   __ _  __ _  ___  |  _ \\|  _ \\ / ___|      " << endl;
+	cout << "  | |  _ / _` | '__| '_ \\ / _` |/ _` |/ _ \\ | |_) | |_) | |  _       " << endl;
+	cout << "  | |_| | (_| | |  | |_) | (_| | (_| |  __/ |  _ <|  __/| |_| |        " << endl;
+	cout << "   \\____|\\__,_|_|  |_.__/ \\__,_|\\__, |\\___| |_| \\_\\_|    \\____|" << endl;
+	cout << "                                |___/                                  " << endl;
+	cout << "                                               by CyberLeviathan       " << endl;
+	color(7);
+	cout << lowerLeftCorner << menuBox(63, horizontalLine) << lowerRightCorner << endl;
+	this_thread::sleep_for(chrono::seconds(2));
+	system("CLS");
+}
+//============================================Game==Menu===============================================================================================
+void gameMenu() {
+	cout << upperLeftCorner << menuBox(15, horizontalLine) << leftVerticalLine;
+	color(14);
+	cout << menuGame[0];
+	color(7);
+	cout << rightVerticalLine << menuBox(15, horizontalLine) << upperRightCorner << endl;
+	cout << verticalLine << "            ";
+	color(10);
+	cout << menuGame[1];
+	color(7);
+	cout << "                " << verticalLine << endl;
+	cout << verticalLine << "            ";
+	color(10);
+	cout << menuGame[2];
+	color(7);
+	cout << "        " << verticalLine << endl;
+	cout << verticalLine << "            ";
+	color(10);
+	cout << menuGame[3];
+	color(7);
+	cout << "         " << verticalLine << endl;
+	cout << verticalLine << menuBox(41, horizontalLine) << verticalLine << endl;
+	cout << verticalLine << "            ";
+	color(12);
+	cout << menuGame[4];
+	color(7);
+	cout << "           " << verticalLine << endl;
+	cout << lowerLeftCorner << menuBox(41, horizontalLine) << lowerRightCorner << endl;
+}
+//============================================Character==Creation==Procedure===========================================================================
+void characterCreation() {
+	color(7);
+	cout << charCreationMenu[0];
+	color(14);
+	cin >> name;
+	color(7);
+	cout << endl;
+}
+//============================================Character==Class==Procedure==============================================================================
+void characterClass() {
+	while (1) {
+		char classPick;
+		cout << endl;
+		cout << upperLeftCorner << menuBox(8, horizontalLine) << leftVerticalLine;
+		color(14);
+		cout << selectClass[0];
+		color(7);
+		cout << rightVerticalLine << menuBox(8, horizontalLine) << upperRightCorner << endl;
+		cout << verticalLine;
+		color(10);
+		cout << "    " << selectClass[1] << " ";
+		color(11);
+		cout << selectClass[2] << " ";
+		color(10);
+		cout << selectClass[3] << "   ";
+		color(7);
+		cout << verticalLine << endl;
+		cout << verticalLine;
+		color(10);
+		cout << "    " << selectClass[1] << " ";
+		color(13);
+		cout << selectClass[4] << " ";
+		color(10);
+		cout << selectClass[5] << "      ";
+		color(7);
+		cout << verticalLine << endl;
+		cout << lowerLeftCorner << menuBox(40, horizontalLine) << lowerRightCorner << endl;
+		cin >> classPick;
+		switch (classPick) {
+		case '1': {
+			isWarrior = true;
+			maxHP = 12;
+			playerHP = 12, att = 2, def = 5;
+		}return;
+		case '2': {
+			isMage = true;
+			maxHP = 8;
+			playerHP = 8, att = 6, def = 2;
+		}return;
+		default: {
+			cout << "You must pick one of the specified options, " << name << endl;
+		}
+		}
+	}
+}
+//============================================Main==Menu===============================================================================================
+void mainMenu() {
+	cout << upperLeftCorner << menuBox(15, horizontalLine) << leftVerticalLine;
+	color(14);
+	cout << menuMain[0];
+	color(7);
+	cout << rightVerticalLine << menuBox(15, horizontalLine) << upperRightCorner << endl;
+	cout << verticalLine << "       ";
+	color(10);
+	cout << menuMain[1];
+	color(7);
+	cout << "       " << verticalLine << endl;
+	cout << verticalLine << "       ";
+	color(10);
+	cout << menuMain[2];
+	color(7);
+	cout << "           " << verticalLine << endl;
+	cout << verticalLine << "       ";
+	color(10);
+	cout << menuMain[3];
+	color(7);
+	cout << "           " << verticalLine << endl;
+	cout << verticalLine << "       ";
+	color(10);
+	cout << menuMain[4];
+	color(7);
+	cout << "      " << verticalLine << endl;
+	cout << verticalLine << menuBox(41, horizontalLine) << verticalLine << endl;
+	cout << verticalLine << "       ";
+	color(12);
+	cout << menuMain[5];
+	color(7);
+	cout << "       " << verticalLine << endl;
+	cout << lowerLeftCorner << menuBox(41, horizontalLine) << lowerRightCorner << endl;
+}
+//============================================Character==Stats==Procedure==============================================================================
+void stats(string name) {
+	if (playerHP > 0) {
+		statsInfo();
+	}
+	else if (playerHP <= 0) {
+		cout << "You are dead. You can restart the game and try again." << endl;
+	}
+}
+//============================================Character==Stats==Info===================================================================================
+void statsInfo() {
+	cout << upperLeftCorner << menuBox(14, horizontalLine) << leftVerticalLine;
+	color(14);
+	cout << playerInfo[0];
+	color(7);
+	cout << rightVerticalLine << menuBox(14, horizontalLine) << upperRightCorner << endl;
+	cout << "          ";
+	color(10);
+	if (isWarrior == true) {
+		color(11);
+		cout << "Warrior";
+		color(10);
+	}
+	else if (isMage == true) {
+		color(13);
+		cout << "Mage";
+		color(10);
+	}
+	cout << " " << playerInfo[1] << " ";
+	color(12);
+	cout << playerHP << "/" << maxHP;
+	color(10);
+	cout << " " << playerInfo[2];
+	color(7);
+	cout << endl << "           ";
+	color(14);
+	cout << att;
+	color(10);
+	cout << " " << playerInfo[3] << " ";
+	color(14);
+	cout << def;
+	color(10);
+	cout << " " << playerInfo[4];
+	color(7);
+	cout << "          " << endl;
+	cout << lowerLeftCorner << menuBox(41, horizontalLine) << lowerRightCorner << endl;
+}
+//============================================Healing==Procedure=======================================================================================
+void heal() {
+	if (playerHP < maxHP && lifePotion >= 1) {
+		cout << "You decided to quickly chug a Life Potion and after drinking it.." << endl;
+		lifePotion = lifePotion - 1;
+		playerHP = playerHP + 5;
+		if (playerHP > maxHP) {
+			playerHP = maxHP;
+		}
+		cout << "You have " << playerHP << " HP." << endl;
+	}
+	else if (lifePotion <= 0) {
+		cout << name << ", you are out of Life Potions! Buy more in the shop." << endl;
+	}
+	if (playerHP >= maxHP) {
+		cout << name << ", you are at full HP." << endl;
+	}
+}
+//============================================Shop==Procedure==========================================================================================
+void shop() {
+	while (1) {
+		char shopChoice;
+		cout << upperLeftCorner << menuBox(15, horizontalLine) << leftVerticalLine;
+		color(14);
+		cout << menuShop[0];
+		color(7);
+		cout << rightVerticalLine << menuBox(15, horizontalLine) << upperRightCorner << endl;
+		cout << verticalLine << " ";
+		color(10);
+		cout << menuShop[1];
+		color(7);
+		cout << " " << verticalLine << endl;
+		cout << verticalLine << " ";
+		color(10);
+		cout << menuShop[2];
+		color(7);
+		cout << " " << verticalLine << endl;
+		cout << verticalLine << " ";
+		color(10);
+		cout << menuShop[3];
+		color(7);
+		cout << " " << verticalLine << endl;
+		cout << verticalLine << menuBox(41, horizontalLine) << verticalLine << endl;
+		cout << verticalLine << "  ";
+		color(12);
+		cout << menuShop[4];
+		color(7);
+		cout << "  " << verticalLine << endl;
+		cout << lowerLeftCorner << menuBox(41, horizontalLine) << lowerRightCorner << endl;
+		cin >> shopChoice;
+		switch (shopChoice) {
+		case '1': {
+			if (goldCoins >= 100 && playerHasSword <= 1) {
+				goldCoins = goldCoins - 100;
+				att = att + 1.5;
+				cout << "You bought an Iron Sword and your attack has been increased by +1.5" << endl;
+				cout << endl;
+			}
+			else if (goldCoins < 100) {
+				cout << "You have " << goldCoins << " Gold Coins, which are not enough to purchase the selected item." << endl;
+				cout << endl;
+			}
+			else if (playerHasSword >= 2) {
+				cout << "You are not Roronoa Zoro, you can only carry two swords, dummy." << endl;
+				cout << endl;
+			}
+		}break;
+		case '2': {
+			if (goldCoins >= 100 && playerHasArmor < 1) {
+				goldCoins = goldCoins - 100;
+				def = def + 1;
+				cout << "You bought an Iron Armor and your defense has been increased by +1" << endl;
+				cout << endl;
+			}
+			else if (goldCoins < 100) {
+				cout << "You have " << goldCoins << " Gold Coins, which are not enough to purchase the selected item." << endl;
+				cout << endl;
+			}
+			else if (playerHasArmor >= 1) {
+				cout << "You already own an armor, dummy." << endl;
+				cout << endl;
+			}
+		}break;
+		case '3': {
+			if (goldCoins >= 50) {
+				goldCoins = goldCoins - 50;
+				lifePotion = lifePotion + 1;
+				cout << "You bought a Life Potion. " << "You now have " << lifePotion << " Life Potions." << endl;
+				cout << endl;
+			}
+			else if (goldCoins < 50) {
+				cout << "You have " << goldCoins << " Gold Coins, which are not enough to purchase the selected item." << endl;
+				cout << endl;
+			}
+		}break;
+		case 'r':
+		case 'R': {
+		}return;
+		default: {
+			cout << "You must pick one of the specified options, " << name << endl;
+		}
+		}
+	}
+}
+//============================================Inventory==Procedure=====================================================================================
+void playerInventory() {
+	if (playerHP > 0) {
+		cout << "===================INVENTORY===================" << endl;
+		cout << "          |<3| Life Potions = " << lifePotion << "  |<3|" << endl;
+		cout << "           |$| Gold Coins =  " << goldCoins << "  |$|   " << endl;
+		cout << "===============================================" << endl;
+	}
+	else if (playerHP <= 0) {
+		cout << "You are dead. You can restart the game and try again." << endl;
+	}
+}
+//============================================Character==Meets==NPC==Procedure=========================================================================
+void encounterNPC() {
+	string npcName = "The Milkman";
+	while (1) {
+		char milkChoice;
+		cout << npcName << ": Well, hello there, adventurer!" << endl;
+		cout << npcName << ": Check out my SPECIAL Milk-Infused Amulet which is now for SALE!" << endl;
+		cout << endl;
+		cout << "=====================MILK==SHOP===========================" << endl;
+		cout << "   To buy the Milk Amulet x1 for 100 gold - type '1'  " << endl;
+		cout << menuBox(50, horizontalLine) << endl;
+		cout << "        Return to the main menu by typing 'R'         " << endl;
+		cout << menuBox(50, horizontalLine) << endl;
+		cin >> milkChoice;
+		switch (milkChoice) {
+		case '1': {
+			if (goldCoins >= 100) {
+				goldCoins = goldCoins - 100;
+				att = att + 1;
+				def = def + 1;
+				cout << "You bought a milk amulet, weirdo." << endl;
+				cout << endl;
+			}
+			else if (goldCoins < 100) {
+				cout << "You have " << goldCoins << " Gold Coins, which are not enough to purchase the selected item." << endl;
+				cout << npcName << " stares at you for a moment and walks away disappointed." << endl;
+				cout << endl;
+			}
+		}return;
+		case 'r':
+		case 'R': {
+		}return;
+		default: {
+			cout << "You must pick one of the specified options, " << name << endl;
+		}
+		}
+	}
+}
+//============================================Coloring=================================================================================================
+void color(int y) {
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	SetConsoleTextAttribute(h, y);
+
+}
+//============================================Battle==Procedure==ORC===================================================================================
+void fightOrc() {
+	string eName = "Orc";
+	double eHP = rand() % 20 + 10;
+	double eatt = 1, edef = 2;
+	int randomMultiplier = rand() % 2 + 1;
+	cout.precision(2);
+
+	cout << "---------------------------------BATTLE----------------------------------" << endl;
+	cout << "      You see an unfriendly " << eName << " with " << eHP << " HP, " << eatt << " Attack and " << edef << " Defense.    " << endl;
+	cout << "-------------------------------------------------------------------------" << endl;
+	cout << "                                                                           " << endl;
+	cout << "                                                     [@  @]       < Orc    " << endl;
+	cout << "                                                     [ -- ]                " << endl;
+	cout << "                                                (**==========**)           " << endl;
+	cout << " You >    [ *_*]                                 || |======| ||            " << endl;
+	cout << "       (@========@)                              || |======| ||            " << endl;
+	cout << "       || |====| ||                              || |======| ||            " << endl;
+	cout << "       || |====| ||                  ()=========[%] |==||==| [%]           " << endl;
+	cout << "      [%] |=||=| [%]=>>>>>>>                        |==||==|               " << endl;
+	cout << "          |=||=|                                    |==||==|               " << endl;
+	cout << "          [=][=]                                    [==][==]               " << endl;
+	stats(name);
+	int battleOrRun;
+	cout << "=> Type '1' to Engage or '2' to Run: ";
+	cin >> battleOrRun;
+	cout << endl;
+	if (!cin) {
+		cin.clear();
+		cin.ignore();
+	}
+	while (battleOrRun != 1 && battleOrRun != 2) {
+		cout << "=> Type '1' to Engage or '2' to Run: ";
+		cin >> battleOrRun;
+		cout << endl;
+	}
+	if (battleOrRun == 1) {
+		while (playerHP > 0 && eHP > 0) {
+			char attackOrDefend;
+			cout << menuBox(40, horizontalLine) << endl;
+			cout << "            Type '1' to Attack!            " << endl;
+			cout << "            Type '2' to Defend!            " << endl;
+			cout << "      Type '3' to drink a Life Potion!     " << endl;
+			cout << menuBox(40, horizontalLine) << endl;
+			cin >> attackOrDefend;
+			switch (attackOrDefend) {
+			case '1': {
+				cout << "You chose to focus on attacking your enemy and after a brutal fight.." << endl;
+				eHP = eHP - (randomMultiplier * att) / edef;
+				cout << "> " << eName << " has " << eHP << " HP left." << endl;
+				playerHP = playerHP - eatt / def;
+				cout << "> You have " << playerHP << " HP left." << endl;
+			} break;
+			case '2': {
+				cout << "You chose to focus on defending yourself and after a brutal fight.." << endl;
+				eHP = eHP - att / edef;
+				cout << eName << " has " << eHP << " HP left." << endl;
+				playerHP = playerHP - eatt / (randomMultiplier * def);
+				cout << "You have " << playerHP << " HP left." << endl;
+			} break;
+			case '3': {
+				heal();
+			} break;
+			default: {
+				cout << "You must pick one of the specified options, " << name << endl;
+			}
+			}
+		}
+		if (eHP <= 0) {
+			orcIsDead = true;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU WIN! * " << endl;
+			cout << "===============" << endl;
+			goldCoins = goldCoins + 100;
+			cout << eName << " dropped 100 gold coins upon dying." << endl;
+			cout << endl;
+		}
+		else if (playerHP <= 0) {
+			orcIsDead = false;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU LOSE! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+	}
+
+	else if (battleOrRun == 2) {
+		int battleOrRunChance = 0 + rand() % 2;
+		if (battleOrRunChance == 1) {
+			cout << "You managed to escape.. barely!" << endl;
+		}
+		else {
+			orcIsDead = false;
+			playerHP = playerHP - playerHP;
+			cout << "The " << eName << " stabs you in the back!" << endl;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU LOSE! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+	}
+}
+//============================================Battle==Procedure==TROLL=================================================================================
+void fightTroll() {
+	string eName2 = "Troll";
+	double eHP2 = rand() % 40 + 10;
+	double eatt2 = 2, edef2 = 2;
+	int randomMultiplier = rand() % 2 + 1;
+	cout.precision(2);
+
+	cout << "---------------------------------BATTLE----------------------------------" << endl;
+	cout << "      You see an unfriendly " << eName2 << " with " << eHP2 << " HP, " << eatt2 << " Attack and " << edef2 << " Defense.  " << endl;
+	cout << "-------------------------------------------------------------------------" << endl;
+	cout << "                                                                           " << endl;
+	cout << "                                                     [& &]       < Troll   " << endl;
+	cout << "                                                     [ ~ ]                 " << endl;
+	cout << "                                                (#===========#)            " << endl;
+	cout << " You >    [ *_*]                                 || |=====| ||             " << endl;
+	cout << "       (@========@)                              || |=====| ||             " << endl;
+	cout << "       || |====| ||                  |--|        || |=====| ||             " << endl;
+	cout << "       || |====| ||                  | (|=======[%] |=| |=| [%]            " << endl;
+	cout << "      [%] |=||=| [%]=>>>>>>>         |--|           |=| |=|                " << endl;
+	cout << "          |=||=|                                    |=| |=|                " << endl;
+	cout << "          [=][=]                                    [=] [=]                " << endl;
+	stats(name);
+	int battleOrRun;
+	cout << "=> Type '1' to Engage or '2' to Run: ";
+	cin >> battleOrRun;
+	cout << endl;
+	if (!cin) {
+		cin.clear();
+		cin.ignore();
+	}
+	while (battleOrRun != 1 && battleOrRun != 2) {
+		cout << "=> Type '1' to Engage or '2' to Run: ";
+		cin >> battleOrRun;
+		cout << endl;
+	}
+	if (battleOrRun == 1) {
+		while (playerHP > 0 && eHP2 > 0) {
+			char attackOrDefend;
+			cout << menuBox(40, horizontalLine) << endl;
+			cout << "            Type '1' to Attack!            " << endl;
+			cout << "            Type '2' to Defend!            " << endl;
+			cout << "      Type '3' to drink a Life Potion!     " << endl;
+			cout << menuBox(40, horizontalLine) << endl;
+			cin >> attackOrDefend;
+			switch (attackOrDefend) {
+			case '1': {
+				cout << "You chose to focus on attacking your enemy and after a brutal fight.." << endl;
+				eHP2 = eHP2 - (randomMultiplier * att) / edef2;
+				cout << "> " << eName2 << " has " << eHP2 << " HP left." << endl;
+				playerHP = playerHP - eatt2 / def;
+				cout << "> You have " << playerHP << " HP left." << endl;
+			} break;
+			case '2': {
+				cout << "You chose to focus on defending yourself and after a brutal fight.." << endl;
+				eHP2 = eHP2 - att / edef2;
+				cout << eName2 << " has " << eHP2 << " HP left." << endl;
+				playerHP = playerHP - eatt2 / (randomMultiplier * def);
+				cout << "You have " << playerHP << " HP left." << endl;
+			} break;
+			case '3': {
+				heal();
+			} break;
+			default: {
+				cout << "You must pick one of the specified options, " << name << endl;
+			}
+			}
+		}
+		if (eHP2 <= 0) {
+			trollIsDead = true;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU WIN! * " << endl;
+			cout << "===============" << endl;
+			goldCoins = goldCoins + 150;
+			cout << eName2 << " dropped 150 gold coins upon dying." << endl;
+			cout << endl;
+		}
+		else if (playerHP <= 0) {
+			trollIsDead = false;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU LOSE! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+	}
+
+	else if (battleOrRun == 2) {
+		int battleOrRunChance = 0 + rand() % 2;
+		if (battleOrRunChance == 1) {
+			cout << "You managed to escape.. barely!";
+		}
+		else {
+			orcIsDead = false;
+			playerHP = playerHP - playerHP;
+			cout << "The " << eName2 << " stabs you in the back!" << endl;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU LOSE! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+	}
+}
+//============================================Battle==Procedure==GIANT=================================================================================
+void fightGiant() {
+	string eName3 = "Giant";
+	double eHP3 = rand() % 60 + 10;
+	double eatt3 = 2, edef3 = 2;
+	int randomMultiplier = rand() % 2 + 1;
+	cout.precision(2);
+
+	cout << "---------------------------------BATTLE----------------------------------" << endl;
+	cout << "      You see an unfriendly " << eName3 << " with " << eHP3 << " HP, " << eatt3 << " Attack and " << edef3 << " Defense.   " << endl;
+	cout << "-------------------------------------------------------------------------" << endl;
+	cout << "                                                      [# #]                " << endl;
+	cout << "                                                      [ ~ ]       < Giant  " << endl;
+	cout << "                                                 (#############)           " << endl;
+	cout << "                                                 |#| |#####| |#|           " << endl;
+	cout << " You >    [ *_*]                                 |#| |#####| |#|           " << endl;
+	cout << "       (@========@)                              |#| |#####| |#|           " << endl;
+	cout << "       || |====| ||                              |#| |#####| |#|           " << endl;
+	cout << "       || |====| ||                   ##########=[%] |#| |#| [%]=##########" << endl;
+	cout << "      [%] |=||=| [%]=>>>>>>>                         |#| |#|               " << endl;
+	cout << "          |=||=|                                     |#| |#|               " << endl;
+	cout << "          [=][=]                                     [=] [=]               " << endl;
+	stats(name);
+	int battleOrRun;
+	cout << "=> Type '1' to Engage or '2' to Run: ";
+	cin >> battleOrRun;
+	cout << endl;
+	if (!cin) {
+		cin.clear();
+		cin.ignore();
+	}
+	while (battleOrRun != 1 && battleOrRun != 2) {
+		cout << "=> Type '1' to Engage or '2' to Run: ";
+		cin >> battleOrRun;
+		cout << endl;
+	}
+	if (battleOrRun == 1) {
+		while (playerHP > 0 && eHP3 > 0) {
+			char attackOrDefend;
+			cout << menuBox(40, horizontalLine) << endl;
+			cout << "            Type '1' to Attack!            " << endl;
+			cout << "            Type '2' to Defend!            " << endl;
+			cout << "      Type '3' to drink a Life Potion!     " << endl;
+			cout << menuBox(40, horizontalLine) << endl;
+			cin >> attackOrDefend;
+			switch (attackOrDefend) {
+			case '1': {
+				cout << "You chose to focus on attacking your enemy and after a brutal fight.." << endl;
+				eHP3 = eHP3 - (randomMultiplier * att) / edef3;
+				cout << "> " << eName3 << " has " << eHP3 << " HP left." << endl;
+				playerHP = playerHP - eatt3 / def;
+				cout << "> You have " << playerHP << " HP left." << endl;
+			} break;
+			case '2': {
+				cout << "You chose to focus on defending yourself and after a brutal fight.." << endl;
+				eHP3 = eHP3 - att / edef3;
+				cout << eName3 << " has " << eHP3 << " HP left." << endl;
+				playerHP = playerHP - eatt3 / (randomMultiplier * def);
+				cout << "You have " << playerHP << " HP left." << endl;
+			} break;
+			case '3': {
+				heal();
+			} break;
+			default: {
+				cout << "You must pick one of the specified options, " << name << endl;
+			}
+			}
+		}
+		if (eHP3 <= 0) {
+			giantIsDead = true;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU WIN! * " << endl;
+			cout << "===============" << endl;
+			goldCoins = goldCoins + 150;
+			cout << eName3 << " dropped 150 gold coins upon dying." << endl;
+			cout << endl;
+		}
+		else if (playerHP <= 0) {
+			giantIsDead = false;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU LOSE! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+	}
+
+	else if (battleOrRun == 2) {
+		int battleOrRunChance = 0 + rand() % 2;
+		if (battleOrRunChance == 1) {
+			cout << "You managed to escape.. barely!";
+		}
+		else {
+			orcIsDead = false;
+			playerHP = playerHP - playerHP;
+			cout << "The " << eName3 << " stabs you in the back!" << endl;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU LOSE! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+	}
+}
+//============================================Battle==Procedure==UNDEAD================================================================================
+void fightUndead() {
+	string eName4 = "Undead";
+	double eHP4 = rand() % 80 + 20;
+	double eatt4 = 4, edef4 = 2;
+	int randomMultiplier = rand() % 2 + 1;
+	cout.precision(2);
+
+	cout << "---------------------------------BATTLE----------------------------------" << endl;
+	cout << "      You see an unfriendly " << eName4 << " with " << eHP4 << " HP, " << eatt4 << " Attack and " << edef4 << " Defense.   " << endl;
+	cout << "-------------------------------------------------------------------------" << endl;
+	cout << "                                                                          " << endl;
+	cout << "                                                      [*-*]       < Undead" << endl;
+	cout << "                                                  (@--------@)            " << endl;
+	cout << "                                                  || |    | ||            " << endl;
+	cout << " You >    [ *_*]                                  || |    | ||            " << endl;
+	cout << "       (@========@)                               ||  |  |  ||            " << endl;
+	cout << "       || |====| ||                               || |____| ||            " << endl;
+	cout << "       || |====| ||                   <==========[%] ||  || [%]=#========>" << endl;
+	cout << "      [%] |=||=| [%]=>>>>>>>                         ||  ||               " << endl;
+	cout << "          |=||=|                                     ||  ||               " << endl;
+	cout << "          [=][=]                                    [=] [=]               " << endl;
+	stats(name);
+	int battleOrRun;
+	cout << "=> Type '1' to Engage or '2' to Run: ";
+	cin >> battleOrRun;
+	cout << endl;
+	if (!cin) {
+		cin.clear();
+		cin.ignore();
+	}
+	while (battleOrRun != 1 && battleOrRun != 2) {
+		cout << "=> Type '1' to Engage or '2' to Run: ";
+		cin >> battleOrRun;
+		cout << endl;
+	}
+	if (battleOrRun == 1) {
+		while (playerHP > 0 && eHP4 > 0) {
+			char attackOrDefend;
+			cout << menuBox(40, horizontalLine) << endl;
+			cout << "            Type '1' to Attack!            " << endl;
+			cout << "            Type '2' to Defend!            " << endl;
+			cout << "      Type '3' to drink a Life Potion!     " << endl;
+			cout << menuBox(40, horizontalLine) << endl;
+			cin >> attackOrDefend;
+			switch (attackOrDefend) {
+			case '1': {
+				cout << "You chose to focus on attacking your enemy and after a brutal fight.." << endl;
+				eHP4 = eHP4 - (randomMultiplier * att) / edef4;
+				cout << "> " << eName4 << " has " << eHP4 << " HP left." << endl;
+				playerHP = playerHP - eatt4 / def;
+				cout << "> You have " << playerHP << " HP left." << endl;
+			} break;
+			case '2': {
+				cout << "You chose to focus on defending yourself and after a brutal fight.." << endl;
+				eHP4 = eHP4 - att / edef4;
+				cout << eName4 << " has " << eHP4 << " HP left." << endl;
+				playerHP = playerHP - eatt4 / (randomMultiplier * def);
+				cout << "You have " << playerHP << " HP left." << endl;
+			} break;
+			case '3': {
+				heal();
+			} break;
+			default: {
+				cout << "You must pick one of the specified options, " << name << endl;
+			}
+			}
+		}
+		if (eHP4 <= 0) {
+			undeadIsDead = true;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU WIN! * " << endl;
+			cout << "===============" << endl;
+			goldCoins = goldCoins + 250;
+			cout << eName4 << " dropped 250 gold coins upon dying." << endl;
+			cout << endl;
+		}
+		else if (playerHP <= 0) {
+			undeadIsDead = false;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU LOSE! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+	}
+
+	else if (battleOrRun == 2) {
+		int battleOrRunChance = 0 + rand() % 2;
+		if (battleOrRunChance == 1) {
+			cout << "You managed to escape.. barely!";
+		}
+		else {
+			orcIsDead = false;
+			playerHP = playerHP - playerHP;
+			cout << "The " << eName4 << " stabs you in the back!" << endl;
+			cout << endl;
+			cout << "===============" << endl;
+			cout << " * YOU LOSE! * " << endl;
+			cout << "===============" << endl;
+			cout << endl;
+		}
+	}
+}
